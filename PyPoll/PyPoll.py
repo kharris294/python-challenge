@@ -2,57 +2,79 @@ import os
 import csv
 
 # import OS module, create file paths across operating systems
-# csvpath = os.path.join(/Users/kathrynharris/Desktop/election_data.csv)
-csvpath = "/Users/kathrynharris/Desktop/election_data.csv"
+csvpath = os.path.join("Resources", election_data.csv)
+csvpath = "/Users/kathrynharris/Documents/python-challenge/Resources/election_data.csv"
 
-# Declare variables
-votes = 0
-winner_votes = 0
-total_candidates = 0
-greatest_votes = ["", 0]
-candidate_options = []
-candidate_votes = {}
+# declare variables
+candidates = []
+num_votes = 0
+vote_counts = []
 
+# read the data
+with open(csvpath,newline="") as csvfile:
+    csvreader = csv.reader(csvfile)
 
-# Read the data
-with open(csvpath) as election_data:
-    reader = csv.DictReader(election_data)
+    # skip the header
+    line = next(csvreader,None)
 
-# Create loop to do work within to find the finish products
-    for row in reader:
-        print(row)
-        votes = votes + 1
-  #      total_candidates = row["Candidate"]
-#
-  #      if row["Candidate not in candidate_options"]:
-  #          candidate_options.append(row["Candidate"])
-  #          candidate_votes[row["Candidate"]] = 1
-#
- #       else: 
-#
- #           candidate_votes[row["Candidate"]] = candidates_votes[row["Candidate"]] + 1
+    #go line by line and process/count each vote
+    for line in csvreader:
 
-    #print information
-    print()
-    print()
-    print()
-    print("Election Results")
-    print("-------------------------")
-    print("Total Votes " + str(votes))
-    print("-------------------------")
-# results
-    for candidate in candidate_votes:
-        print(candidate + " " + str(round(((candidate_votes[candidate]/votes)*100))) + "%" + " (" + str(candidate_votes[candidate]) + ")") 
-        candidate_results = (candidate + " " + str(round(((candidate_votes[candidate]/votes)*100))) + "%" + " (" + str(candidate_votes[candidate]) + ")") 
-    
-candidate_votes
+        #add to total number of votes
+        num_votes = num_votes + 1
 
-winner = sorted(candidate_votes.items(), key=itemgetter(1), reverse=True)
+        #candidate that was voted for
+        candidate = line[2]
 
-# results
-print("-------------------------")
-print("Winner: " + str(winner[0]))
-print("-------------------------")
+        #if candidate has other votes then add to vote tally
+        if candidate in candidates:
+            candidate_index = candidates.index(candidate)
+            vote_counts[candidate_index] = vote_counts[candidate_index] + 1
+        # or else create new spot in list for candidate
+        else:
+            candidates.append(candidate)
+            vote_counts.append(1)
+
+percentages = []
+max_votes = vote_counts[0]
+max_index = 0
+#find percentage of vote for each candidate and the winner
+for count in range(len(candidates)):
+    vote_percentage = vote_counts[count]/num_votes*100
+    percentages.append(vote_percentage)
+    if vote_counts[count] > max_votes:
+        max_votes = vote_counts[count]
+        print(max_votes)
+        max_index = count
+winner = candidates[max_index]
+
+#print results
+print("Election Results")
+print("--------------------------")
+print(f"Total Votes: {num_votes}")
+for count in range(len(candidates)):
+    print(f"{candidates[count]}: {percentages[count]}% ({vote_counts[count]})")
+print("---------------------------")
+print(f"Winner: {winner}")
+print("---------------------------")
+
+write_file = f"pypoll_results_summary.txt"
+
+#open write file
+filewriter = open(write_file, mode = 'w')
+
+#print analysis to file
+filewriter.write("Election Results\n")
+filewriter.write("--------------------------\n")
+filewriter.write(f"Total Votes: {num_votes}\n")
+for count in range(len(candidates)):
+    filewriter.write(f"{candidates[count]}: {percentages[count]}% ({vote_counts[count]})\n")
+filewriter.write("---------------------------\n")
+filewriter.write(f"Winner: {winner}\n")
+filewriter.write("---------------------------\n")
+
+#close file
+filewriter.close()
    
    
         
