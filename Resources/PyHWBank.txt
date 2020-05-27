@@ -1,0 +1,5 @@
+Total Months: 86
+Total Profit: 38382578
+Average Change: $-2315.1176470588234
+Greatest Increase in Revenue: Feb-2012 $302709
+Greatest Decrease in Revenue: Sep-2013 $-2064109
